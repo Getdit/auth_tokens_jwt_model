@@ -1,0 +1,3 @@
+requests~=2.31.0
+sshkey-tools~=0.10.2
+pycryptodome~=3.19.0
