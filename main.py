@@ -33,7 +33,7 @@ while menu_option != (len(MENU_OPTIONS) - 1):
             e = Encryptor()
 
             encrypted_key = e.encrypt(PUB_KEY)
-
+            print(encrypted_key)
             user_name = input("Digite seu nome de usuário:\n    - ")
 
             user_id = ""

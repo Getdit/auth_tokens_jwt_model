@@ -6,6 +6,7 @@ import base64
 
 from settings import DEFAULT_KEY, DEFAULT_IV, DEFAULT_SALT
 
+
 class Encryptor():
     def __init__(self, key=None, iv=DEFAULT_IV):
         self.key = key or self.generate_keys()
@@ -13,7 +14,7 @@ class Encryptor():
 
     def encrypt(self, data):
         cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
-        return str(base64.b64encode(cipher.encrypt(pad(bytes(data, "utf-8"), AES.block_size))).decode("utf-8"))
+        return str(base64.b64encode(cipher.encrypt(pad(bytes(data, "utf-8"), 32))).decode("utf-8"))
 
     def decrypt(self, data):
         cipher = AES.new(self.key, AES.MODE_CBC, self.iv.encode("utf-8"))
@@ -21,7 +22,5 @@ class Encryptor():
 
     def generate_keys(self):
         key = PBKDF2(DEFAULT_KEY, DEFAULT_SALT, 32, count=65536, hmac_hash_module=SHA256)
-        print(key)
-        print(hex(key))
 
         return key
