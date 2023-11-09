@@ -8,4 +8,4 @@ DEFAULT_IV =  bytes.fromhex('2451da89a7ef8d5739a06796b8698e7c')
 
 MENU_OPTIONS = ['Configurar par de chaves', 'Enviar par de chaves', 'Sair']
 
-DEFAULT_SALT = "f25bc2f1d7f7cb0674e70752f50c02d2"
+DEFAULT_SALT = bytes.fromhex("f25bc2f1d7f7cb0674e70752f50c02d2")

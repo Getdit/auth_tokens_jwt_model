@@ -20,5 +20,8 @@ class Encryptor():
         return unpad(cipher.decrypt(base64.b64decode(data)), AES.block_size)
 
     def generate_keys(self):
-        key = PBKDF2(DEFAULT_KEY, bytes(DEFAULT_SALT, "utf-8"), 32, count=65536, hmac_hash_module=SHA256)
+        key = PBKDF2(DEFAULT_KEY, DEFAULT_SALT, 32, count=65536, hmac_hash_module=SHA256)
+        print(key)
+        print(hex(key))
+
         return key
