@@ -7,11 +7,11 @@ from settings import DEFAULT_KEYPAIR_FILENAME, DEFAULT_KEYPAIR_LOCATION
 
 
 def get_keys():
-    has_key = input("Você já possui uma chave SSH? (S/n) ") == "S"
+    has_key = True#input("Você já possui uma chave SSH? (S/n) ") == "S"
 
     if has_key:
-        key_path = input(f"Digite o caminho para a chave (Deixem em branco para {DEFAULT_KEYPAIR_LOCATION+DEFAULT_KEYPAIR_FILENAME}):\n    ") or (DEFAULT_KEYPAIR_LOCATION+DEFAULT_KEYPAIR_FILENAME)
-        key_pass = input("Digite a senha da chave (Deixe em branco caso não possua senha):\n    ") or None
+        key_path = "./chedimon"#input(f"Digite o caminho para a chave (Deixem em branco para {DEFAULT_KEYPAIR_LOCATION+DEFAULT_KEYPAIR_FILENAME}):\n    ") or (DEFAULT_KEYPAIR_LOCATION+DEFAULT_KEYPAIR_FILENAME)
+        key_pass = "1234"#input("Digite a senha da chave (Deixe em branco caso não possua senha):\n    ") or None
 
         priv = EcdsaPrivateKey.from_file(key_path, key_pass)
 

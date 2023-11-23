@@ -3,13 +3,11 @@ import requests
 import socket
 import time
 import random
-from settings import AUTH_HOST, COMM_HOST, COMM_PORT
-from utils import PersonalPyJWS
+from settings import AUTH_HOST, COMM_HOST, COMM_PORT, DECODE_KEY
 
 
 import jwt
 
-pjws = PersonalPyJWS()
 
 def send_post_json(message: dict) -> dict:
     if AUTH_HOST:
@@ -43,18 +41,10 @@ def send_message_udp(message):
     return None
 
 
-
-# def jwt_encode(payload: dict, key: str):
-#     return pjws.encode(payload, key, algorithm='HS256')
-#
-# def jwt_decode(token: str, key: str):
-#     return pjws.decode(token, key, algorithms=['HS256'])
-
 def get_random_16bytes_hexa():
     return "".join([('0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f')[random.randint(0, 15)] for _ in range(32)])
 
 def send_message_by_jwt(key: str, seq_state_number: int, matricula: int):
-    key = "secret-key-for-dec7557".encode()
     seq_state = ["RED", "ORANGE", "YELLOW", "GREEN", "BLUE", "INDIGO", "VIOLET"][seq_state_number]
     jti = get_random_16bytes_hexa()
 
@@ -64,21 +54,21 @@ def send_message_by_jwt(key: str, seq_state_number: int, matricula: int):
         "seq_state_number": seq_state_number + 1,
         "seq_state": seq_state,
         "seq_max": 2,
-        "registration": 222222,
         "jti": jti,
         "iat": int(time.time()),
         "exp": int(time.time()) + 30,
         "registration": matricula,
         }
+    print("Tokenizando...\n", key)
 
-    token = jwt.encode(payload, key)
+    token = jwt.encode(payload, key, algorithm='RS256')
 
     print(f"Sending message: \n    {payload}\n    {token}\n\n")
 
     response = send_message_udp(token.encode())
     print(f"------> Response: \n    {response}\n\n")
     if not response is None:
-        response_data = jwt.decode(response, key, algorithms=['HS256'])
+        response_data = jwt.decode(response, DECODE_KEY, algorithms=['HS256'])
 
         print(f"Response: \n    {response_data}\n    {response}\n\n")
         return False
