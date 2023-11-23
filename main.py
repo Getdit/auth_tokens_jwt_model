@@ -2,7 +2,7 @@ from settings import MENU_OPTIONS
 from utils import menu
 from auth_setup import get_keys
 from encrypt import Encryptor
-from sender import send_post_json
+from sender import send_post_json, send_message_by_jwt
 
 PRIV_KEY = None
 PUB_KEY = None
@@ -52,3 +52,23 @@ while menu_option != (len(MENU_OPTIONS) - 1):
             message = send_post_json(message)
         else:
             message = "ATENÇÃO: Você precisa configurar uma chave privada e uma chave pública para enviar a chave pública.\n\n"
+
+    elif menu_option == 2:
+        matriculas = [21203167, 21203171]
+        send_finished = False
+
+        attempts = 0
+        while send_finished == False:
+            attempts += 1
+            print(f"ATTEMPT {attempts}")
+            send_error = False
+            for i in range(7):
+                if not send_error:
+                    matricula = matriculas[i % 2]
+                    send_error = send_message_by_jwt(" ".join(PRIV_KEY), i, matricula)
+
+            if not send_error:
+                send_finished = True
+
+
+

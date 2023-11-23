@@ -42,3 +42,82 @@ def menu(title, classes):
         return option
 
     return curses.wrapper(character)
+
+
+
+from jwt import PyJWS
+import base64
+
+import json
+from typing import Dict, Optional, Type
+
+from jwt.algorithms import (
+    has_crypto,
+    requires_cryptography,
+)
+from jwt.exceptions import (
+    DecodeError,
+    InvalidAlgorithmError,
+    InvalidSignatureError,
+    InvalidTokenError,
+)
+
+
+def base64_encode(data):
+    return bytes(base64.b64encode(data))
+
+def base64_decode(data):
+    return base64.b64decode(data)
+
+class PersonalPyJWS(PyJWS):
+    def encode(
+        self,
+        payload: bytes,
+        key: str,
+        algorithm: str = "HS256",
+        headers: Optional[Dict] = None,
+        json_encoder: Optional[Type[json.JSONEncoder]] = None,
+    ) -> str:
+        segments = []
+
+        if algorithm is None:
+            algorithm = "none"
+
+        if algorithm not in self._valid_algs:
+            pass
+
+        # Header
+        header = {"typ": self.header_typ, "alg": algorithm}
+
+        if headers:
+            self._validate_headers(headers)
+            header.update(headers)
+
+        json_header = json.dumps(
+            header, separators=(",", ":"), cls=json_encoder
+        ).encode()
+
+        segments.append(base64_encode(json_header))
+        segments.append(base64_encode(payload))
+
+        # Segments
+        signing_input = b".".join(segments)
+        try:
+            alg_obj = self._algorithms[algorithm]
+            key = alg_obj.prepare_key(key)
+            signature = alg_obj.sign(signing_input, key)
+
+        except KeyError:
+            if not has_crypto and algorithm in requires_cryptography:
+                raise NotImplementedError(
+                    "Algorithm '%s' could not be found. Do you have cryptography "
+                    "installed?" % algorithm
+                )
+            else:
+                raise NotImplementedError("Algorithm not supported")
+
+        segments.append(base64_encode(signature))
+
+        encoded_string = b".".join(segments)
+
+        return encoded_string.decode("utf-8")
