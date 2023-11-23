@@ -60,7 +60,7 @@ def send_message_by_jwt(key: str, seq_state_number: int, matricula: int):
 
     payload = {
         "sub": "CHEDIMON",
-        "aud": COMM_HOST,
+        "aud": "udp.socket.server.for.jwt",
         "seq_state_number": seq_state_number + 1,
         "seq_state": seq_state,
         "seq_max": 2,
