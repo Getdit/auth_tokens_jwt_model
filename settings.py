@@ -13,4 +13,4 @@ MENU_OPTIONS = ['Configurar par de chaves', 'Enviar par de chaves', 'Enviar mens
 DEFAULT_SALT = bytes.fromhex("f25bc2f1d7f7cb0674e70752f50c02d2")
 
 import base64
-DECODE_KEY = "c2VjcmV0LWtleS1mb3ItZGVjNzU1Nw=="
+DECODE_KEY = "secret-key-for-dec7557\n"

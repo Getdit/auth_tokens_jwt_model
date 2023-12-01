@@ -1,8 +1,9 @@
 import json
 import requests
 import socket
-import time
+import datetime
 import random
+import time
 from settings import AUTH_HOST, COMM_HOST, COMM_PORT, DECODE_KEY
 
 
@@ -47,30 +48,30 @@ def get_random_16bytes_hexa():
 def send_message_by_jwt(key: str, seq_state_number: int, matricula: int):
     seq_state = ["RED", "ORANGE", "YELLOW", "GREEN", "BLUE", "INDIGO", "VIOLET"][seq_state_number]
     jti = get_random_16bytes_hexa()
-
+    iat = int(time.time()) - 8
     payload = {
         "sub": "CHEDIMON",
         "aud": "udp.socket.server.for.jwt",
-        "seq_state_number": seq_state_number + 1,
+        "seq_state_number": seq_state_number,
         "seq_state": seq_state,
         "seq_max": 2,
         "jti": jti,
-        "iat": int(time.time()),
-        "exp": int(time.time()) + 30,
+        "iat": iat,
+        "exp": iat + 30,
         "registration": matricula,
         }
-    print("Tokenizando...\n", key)
 
     token = jwt.encode(payload, key, algorithm='RS256')
-
+    print("---------------")
     print(f"Sending message: \n    {payload}\n    {token}\n\n")
 
     response = send_message_udp(token.encode())
-    print(f"------> Response: \n    {response}\n\n")
     if not response is None:
         response_data = jwt.decode(response, DECODE_KEY, algorithms=['HS256'])
 
         print(f"Response: \n    {response_data}\n    {response}\n\n")
-        return False
+        print("---------------")
+        return response_data
     else:
-        return True
+        print("---------------")
+        return None
